@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { Customer } from "./customer.model.js";
+import { checkMongoIdValidity } from "../utils/utils.js";
 
 // validation logic of customer
 export const validateCustomer = async (req, res, next) => {
@@ -42,4 +43,47 @@ export const addCustomer = async (req, res, next) => {
   } catch (error) {
     return res.status(500).send({ message: error.message });
   }
+};
+
+// delete customer
+export const deleteCustomer = async (req, res) => {
+  // extract id
+  const customerId = req.params.id;
+
+  // validate id
+  const isValidMongoId = checkMongoIdValidity(customerId);
+
+  if (!isValidMongoId) {
+    return res.status(400).send({ message: "Invalid mongoId" });
+  }
+
+  // delete customer
+  await Customer.deleteOne({ _id: customerId });
+
+  // send response
+  return res.status(200).send({ message: "Customer deleted successfully." });
+};
+
+// get customer by Id
+export const getCustomerDetails = async (req, res) => {
+  // extract id
+  const customerId = req.params.id;
+
+  // validate id
+  const isValidId = checkMongoIdValidity(customerId);
+
+  if (!isValidId) {
+    return res.status(400).send({ message: "Invalid mongo id" });
+  }
+
+  // find user
+  const customer = await Customer.findById(customerId);
+
+  // if not user throw error
+  if (!customer) {
+    return res.status(404).send({ message: "Customer does not exist." });
+  }
+
+  // send customer as response
+  return res.status(200).send(customer);
 };
