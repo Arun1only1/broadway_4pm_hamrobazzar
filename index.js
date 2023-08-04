@@ -11,7 +11,7 @@ db_connect();
 // register routes
 app.use(customerRoutes);
 
-const port = 8000;
+const port = process.env.PORT;
 
 app.listen(port, () => {
   console.log("App is listening on port", port);
