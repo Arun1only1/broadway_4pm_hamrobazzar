@@ -64,7 +64,7 @@ export const deleteCustomer = async (req, res) => {
   return res.status(200).send({ message: "Customer deleted successfully." });
 };
 
-// get customer by Id
+// get customer details by Id
 export const getCustomerDetails = async (req, res) => {
   // extract id
   const customerId = req.params.id;
@@ -86,4 +86,44 @@ export const getCustomerDetails = async (req, res) => {
 
   // send customer as response
   return res.status(200).send(customer);
+};
+
+// edit customer
+export const editCustomer = async (req, res) => {
+  // extract id
+  const customerId = req.params.id;
+
+  // validate id
+  const isValid = checkMongoIdValidity(customerId);
+
+  // if not valid, throw error
+  if (!isValid) {
+    return res.status(400).send({ message: "Invalid mongo id." });
+  }
+
+  // check customer with id exists or not
+  const customer = await Customer.findOne({ _id: customerId });
+
+  // if not customer, throw error
+  if (!customer) {
+    return res.status(404).send({ message: "Customer does not exist." });
+  }
+
+  // edit customer
+  const newCustomer = req.body;
+
+  await Customer.updateOne(
+    { _id: customerId },
+    {
+      $set: {
+        name: newCustomer.name,
+        dob: newCustomer.dob,
+        email: newCustomer.email,
+        gender: newCustomer.gender,
+      },
+    }
+  );
+
+  // send appropriate response
+  return res.status(200).send({ message: "Customer updated successfully." });
 };

@@ -9,7 +9,7 @@ app.use(express.json());
 db_connect();
 
 // register routes
-app.use(customerRoutes);
+app.use("/customer", customerRoutes);
 
 const port = process.env.PORT;
 
