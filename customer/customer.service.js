@@ -127,3 +127,14 @@ export const editCustomer = async (req, res) => {
   // send appropriate response
   return res.status(200).send({ message: "Customer updated successfully." });
 };
+
+// search  customer by name
+export const searchCustomerByName = async (req, res) => {
+  const nameToBeSearched = req.body.name;
+
+  const customers = await Customer.find({
+    name: { $regex: nameToBeSearched, $options: "i" },
+  });
+
+  return res.status(200).send(customers);
+};

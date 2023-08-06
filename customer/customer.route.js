@@ -5,6 +5,7 @@ import {
   deleteCustomer,
   getCustomerDetails,
   editCustomer,
+  searchCustomerByName,
 } from "./customer.service.js";
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.get("/details/:id", getCustomerDetails);
 // =>body
 // edit customer
 router.put("/edit/:id", validateCustomer, editCustomer);
+
+// search by name
+router.get("/search/name", searchCustomerByName);
 
 export default router;
